@@ -1,0 +1,6 @@
+# Faster Scala Builds
+build --strategy=Scalac=worker
+test --strategy=Scalac=worker
+
+# Faster Closure Builds
+build --strategy=Closure=worker

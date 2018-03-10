@@ -1,0 +1,10 @@
+dependencies:
+  com.typesafe.play:
+    play:
+      version: 2.6.12
+      lang: scala
+      modules: ['', akka-http-server, guice, logback]
+options:
+  languages: ["scala:2.12.4", java]
+  buildHeader:
+    - load("@io_bazel_rules_scala//scala:scala_import.bzl", "scala_import")
