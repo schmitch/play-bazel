@@ -1,21 +1,34 @@
-load("@io_bazel_rules_scala//scala:scala.bzl", "scala_binary")
+load("//devserver:devserver.bzl", "play_binary", "play_devserver")
+load("@io_bazel_rules_scala//scala:scala.bzl", "scala_library")
 
-scala_binary(
-  name = "server-production",
+scala_library(
+  name = "play-files",
   srcs = glob(["app/**/*.scala"]),
-  visibility = ["//visibility:public"],
-  main_class = "play.core.server.ProdServerStart",
   resources = ["conf/logback.xml", "conf/application.conf"],
-  resource_strip_prefix = native.package_name() + "/conf/",
-  jvm_flags = [
-  	"-Dhttp.port=9000",
-    "-Dpidfile.path=/dev/null",
-  	"-Dapplication.name=foo-service",
-  ],
   deps = [
-      "//3rdparty/jvm/com/typesafe/play:play",
-      "//3rdparty/jvm/com/typesafe/play:play_akka_http_server",
-      "//3rdparty/jvm/com/typesafe/play:play_guice",
-      "//3rdparty/jvm/com/typesafe/play:play_logback",
+    "//3rdparty/jvm/com/typesafe/play:play",
+    "//3rdparty/jvm/com/typesafe/play:play_akka_http_server",
+    "//3rdparty/jvm/com/typesafe/play:play_guice",
+    "//3rdparty/jvm/com/typesafe/play:play_logback",
   ],
+)
+
+play_devserver(
+  name = "server-dev",
+  jvm_flags = [
+    "-Dhttp.port=9000",
+    "-Dpidfile.path=/dev/null",
+    "-Dapplication.name=foo-service",
+  ],
+  deps = ["play-files"]
+)
+
+play_binary(
+  name = "server-production",
+  jvm_flags = [
+    "-Dhttp.port=9000",
+    "-Dpidfile.path=/dev/null",
+    "-Dapplication.name=foo-service",
+  ],
+  deps = ["play-files"]
 )
